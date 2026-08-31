@@ -1,14 +1,43 @@
-# WasteTime Chat — Connected Firebase Version
+# WasteTime Chat — Persistent Accounts
 
-This version is already configured for the Firebase project `waste-time-chat`.
+This version adds real persistent user accounts using **Firebase Authentication (Email/Password)**.
 
-## Before testing
+## What changed
 
-Open Firebase Console → Realtime Database → **Rules**.
+- Register with email + password.
+- Choose a permanent chat username when registering.
+- Username is 1–10 printable ASCII characters, no spaces.
+- A random chat color is generated once and saved with the account.
+- Log in from another computer and recover the same username/color.
+- Log out button.
+- Only authenticated users can read/send chat messages.
+- Each message stores the sender's Firebase UID.
 
-Paste the contents of `firebase-rules.json`, then click **Publish**.
+## IMPORTANT: enable Email/Password login first
 
-Then upload these files to the root of the GitHub repository:
+In Firebase Console:
+
+1. Open your `waste-time-chat` project.
+2. Go to **Security → Authentication**.
+3. Click **Get started** if needed.
+4. Open **Sign-in method**.
+5. Choose **Email/Password**.
+6. Enable **Email/Password**.
+7. Save.
+
+You do NOT need to enable "Email link (passwordless sign-in)".
+
+## Update Realtime Database rules
+
+Open:
+
+**Realtime Database → Rules**
+
+Replace the rules with the contents of `firebase-rules.json`, then click **Publish**.
+
+## Upload to GitHub
+
+Upload these four files to the repository root:
 
 ```text
 index.html
@@ -17,22 +46,34 @@ firebase-rules.json
 README.md
 ```
 
-Wait for GitHub Pages to deploy, then hard-refresh the site.
+Wait for GitHub Pages to redeploy and hard-refresh the site.
 
-Test with two computers or two different browser windows.
+## Test
 
-## Expected result
+Computer A:
+1. Register an account.
+2. Pick a username.
+3. Send a message.
+4. Log out.
 
-Both devices should show `online` in the top-right.
+Computer B:
+1. Open the same GitHub Pages URL.
+2. Log in with the same email/password.
+3. The same username and color should return.
 
-When one device sends a message, it is written under:
+You can also create a different account on Computer B and chat between the two accounts.
 
-```text
-messages/
-```
+## Important limitations
 
-in Firebase Realtime Database and should appear immediately on both devices.
+This is still a small test chat, not a production-grade social platform.
 
-## Safety note
+It does not yet have:
+- password reset UI
+- email verification
+- unique username enforcement
+- profile editing
+- moderation/admin tools
+- spam/rate limiting
+- account deletion UI
 
-This is intentionally a tiny public test chat. It has no real accounts, identity protection, rate limiting, moderation, or anti-spam system. Do not use it for private or sensitive conversations.
+Do not use it for sensitive/private conversations.
