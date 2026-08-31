@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "profiles": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['name','color','createdAt']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 10 && newData.child('color').isString() && newData.child('createdAt').isNumber()"
+      }
+    },
+    "messages": {
+      ".read": "auth != null",
+      "$message": {
+        ".write": "auth != null && newData.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['uid','name','color','text','createdAt']) && newData.child('uid').isString() && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 10 && newData.child('color').isString() && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 500 && newData.child('createdAt').isNumber()"
+      }
+    }
+  }
+}
