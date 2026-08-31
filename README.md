@@ -1,23 +1,14 @@
-# WasteTime Chat
+# WasteTime Chat — Connected Firebase Version
 
-A deliberately tiny public live-chat experiment for GitHub Pages.
+This version is already configured for the Firebase project `waste-time-chat`.
 
-## Features
+## Before testing
 
-- Pick your own display name.
-- Names are 1–10 printable ASCII characters, with no spaces.
-- Letters, numbers, `-`, `_`, and other printable ASCII symbols are accepted.
-- Every browser session receives a random chat color.
-- Live messages appear for everyone connected to the same Firebase Realtime Database.
-- Last 100 messages are loaded.
-- Messages are limited to 500 characters.
-- User text is inserted with `textContent`, not HTML, to avoid basic HTML/script injection.
+Open Firebase Console → Realtime Database → **Rules**.
 
-## Why Firebase?
+Paste the contents of `firebase-rules.json`, then click **Publish**.
 
-GitHub Pages only hosts static HTML/CSS/JavaScript; it does not run a normal server-side chat backend. The page therefore uses Firebase Realtime Database as the shared realtime message store.
-
-## Files
+Then upload these files to the root of the GitHub repository:
 
 ```text
 index.html
@@ -26,22 +17,22 @@ firebase-rules.json
 README.md
 ```
 
-## Setup
+Wait for GitHub Pages to deploy, then hard-refresh the site.
 
-1. Create a Firebase project at the Firebase Console.
-2. Add a **Web app** to that project.
-3. Create a **Realtime Database**.
-4. Copy your web-app configuration into `config.js`.
-5. Copy your Realtime Database URL into `databaseURL` in `config.js`.
-6. In Realtime Database → Rules, paste the contents of `firebase-rules.json` and publish the rules.
-7. Upload these files to the root of your GitHub repository.
-8. In GitHub: **Settings → Pages → Deploy from a branch → main / root**.
-9. Open the GitHub Pages URL in two different browser windows/devices and chat.
+Test with two computers or two different browser windows.
 
-## Important: this is a test chat, not a production chat
+## Expected result
 
-This intentionally has **no account system**. Anyone can choose any unused-looking name, impersonate another name, spam messages, or write directly to the public database if they know its endpoint.
+Both devices should show `online` in the top-right.
 
-For a real public chat, add authentication, moderation, rate limits, server-side validation, abuse reporting, and stronger database rules.
+When one device sends a message, it is written under:
 
-Do not use this for private or sensitive conversations.
+```text
+messages/
+```
+
+in Firebase Realtime Database and should appear immediately on both devices.
+
+## Safety note
+
+This is intentionally a tiny public test chat. It has no real accounts, identity protection, rate limiting, moderation, or anti-spam system. Do not use it for private or sensitive conversations.
