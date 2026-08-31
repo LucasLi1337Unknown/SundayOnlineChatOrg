@@ -1,144 +1,895 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WasteTime Chat</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui,-apple-system,sans-serif;height:100vh;display:grid;place-items:center}
-.app{width:min(900px,96vw);height:min(760px,94vh);background:#161b22;border:1px solid #30363d;border-radius:18px;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
-header{padding:16px 18px;border-bottom:1px solid #30363d;display:flex;justify-content:space-between;gap:12px}
-#messages{overflow:auto;padding:18px;display:flex;flex-direction:column;gap:11px}
-.msg{display:grid;grid-template-columns:12px 1fr;gap:9px}.dot{width:10px;height:10px;border-radius:50%;margin-top:7px}
-.bubble{background:#21262d;border:1px solid #30363d;border-radius:12px;padding:9px 11px}.name{font-weight:800}.time{font-size:11px;color:#8b949e}.text{white-space:pre-wrap;overflow-wrap:anywhere}
-form{display:grid;grid-template-columns:1fr auto;gap:9px;padding:13px;border-top:1px solid #30363d}
-input,button{font:inherit;border-radius:10px;border:1px solid #30363d}
-input{background:#0d1117;color:#e6edf3;padding:12px}
-button{background:#238636;color:white;font-weight:800;padding:0 18px;cursor:pointer}
-.overlay{position:fixed;inset:0;background:#0d1117ee;display:grid;place-items:center;padding:20px}
-.authbox{width:min(460px,95vw);background:#161b22;border:1px solid #30363d;border-radius:18px;padding:24px}
-.authbox input{width:100%;margin:6px 0}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
-.hidden{display:none!important}.error{color:#ff7b72;font-size:12px;min-height:19px}.status{font-size:12px;color:#8b949e}
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #0b0f14;
+  color: #f4f7fb;
+}
+
+body {
+  overflow: hidden;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at top left, rgba(45, 120, 255, 0.08), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(37, 190, 120, 0.07), transparent 35%),
+    #0b0f14;
+}
+
+header {
+  height: 82px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #222a35;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: #11161d;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 25px;
+  letter-spacing: -0.5px;
+}
+
+.brand p {
+  margin: 5px 0 0;
+  color: #84909f;
+  font-size: 13px;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#me {
+  font-weight: 700;
+}
+
+#status {
+  color: #7d8998;
+  font-size: 12px;
+}
+
+.logout-btn {
+  background: #1c232d;
+  color: #dce5ef;
+  border: 1px solid #303a47;
+  border-radius: 9px;
+  padding: 8px 12px;
+}
+
+.logout-btn:hover {
+  background: #252d38;
+}
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px max(24px, calc((100vw - 900px) / 2));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  margin-top: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bubble {
+  max-width: min(700px, 80vw);
+  background: #151b23;
+  border: 1px solid #252e39;
+  border-radius: 14px;
+  padding: 10px 13px;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.name {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.time {
+  color: #6f7a88;
+  font-size: 11px;
+}
+
+.text {
+  color: #e8edf3;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.chat-form {
+  flex-shrink: 0;
+  padding: 14px max(24px, calc((100vw - 900px) / 2));
+  border-top: 1px solid #222a35;
+  background: #11161d;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-form input {
+  flex: 1;
+  min-width: 0;
+  background: #0d1218;
+  color: white;
+  border: 1px solid #2a3440;
+  border-radius: 11px;
+  padding: 13px 15px;
+  outline: none;
+}
+
+.chat-form input:focus {
+  border-color: #4388ff;
+  box-shadow: 0 0 0 3px rgba(67, 136, 255, 0.12);
+}
+
+.send-btn {
+  background: #238636;
+  color: white;
+  border: none;
+  border-radius: 11px;
+  padding: 0 22px;
+  font-weight: 800;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: #2ea043;
+}
+
+.send-btn:disabled,
+.chat-form input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(4, 7, 11, 0.82);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+
+.auth-card {
+  width: min(430px, 100%);
+  background: #151a21;
+  border: 1px solid #2c3541;
+  border-radius: 20px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
+  padding: 28px;
+}
+
+.auth-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  background: #1f2732;
+  margin-bottom: 18px;
+}
+
+.auth-card h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.auth-subtitle {
+  margin: 7px 0 22px;
+  color: #8793a2;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.auth-tabs {
+  background: #0d1218;
+  border: 1px solid #28313c;
+  padding: 4px;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  color: #8d99a8;
+  background: transparent;
+  font-weight: 700;
+  transition: 0.15s ease;
+}
+
+.tab-btn.active {
+  color: white;
+  background: #252d38;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.field {
+  margin-bottom: 13px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  color: #adb8c5;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.field input {
+  width: 100%;
+  height: 46px;
+  border: 1px solid #303a46;
+  border-radius: 10px;
+  background: #0d1218;
+  color: white;
+  padding: 0 13px;
+  outline: none;
+}
+
+.field input:focus {
+  border-color: #4388ff;
+  box-shadow: 0 0 0 3px rgba(67, 136, 255, 0.12);
+}
+
+.auth-error {
+  min-height: 20px;
+  margin: 2px 0 9px;
+  color: #ff6b6b;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.auth-submit {
+  width: 100%;
+  height: 46px;
+  background: #238636;
+  color: white;
+  border: none;
+  border-radius: 11px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.auth-submit:hover {
+  background: #2ea043;
+}
+
+.auth-note {
+  text-align: center;
+  margin-top: 15px;
+  color: #697584;
+  font-size: 11px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 0 16px;
+  }
+
+  .brand p {
+    display: none;
+  }
+
+  #messages {
+    padding: 18px 14px;
+  }
+
+  .chat-form {
+    padding: 12px 14px;
+  }
+
+  .auth-card {
+    padding: 22px;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
-<header>
-<div><h1>WasteTime Chat 🗿</h1><div>Persistent accounts + public live chat.</div></div>
-<div><div id="status" class="status">connecting…</div><div id="me">not logged in</div><button id="logout" class="hidden">Log out</button></div>
-</header>
-<main id="messages"></main>
-<form id="chatForm"><input id="message" maxlength="500" placeholder="Log in to chat…" disabled><button id="send" disabled>Send</button></form>
+  <header>
+    <div class="brand">
+      <h1>WasteTime Chat 🗿</h1>
+      <p>Come in. Say nonsense. Leave slightly less productive.</p>
+    </div>
+
+    <div class="account">
+      <div>
+        <div id="status">Not logged in</div>
+        <div id="me"></div>
+      </div>
+      <button id="logout" class="logout-btn hidden">Log out</button>
+    </div>
+  </header>
+
+  <main id="messages"></main>
+
+  <form id="chatForm" class="chat-form">
+    <input
+      id="message"
+      maxlength="500"
+      placeholder="Log in to chat..."
+      autocomplete="off"
+      disabled
+    >
+    <button id="send" class="send-btn" disabled>Send</button>
+  </form>
 </div>
 
-<div id="overlay" class="overlay">
-<div class="authbox">
-<h2>WasteTime Account</h2>
-<div class="tabs"><button id="loginTab">Log in</button><button id="registerTab">Register</button></div>
-<div id="registerFields" class="hidden"><input id="username" maxlength="10" placeholder="Username (1–10 ASCII chars)"></div>
-<input id="email" type="email" placeholder="Email">
-<input id="password" type="password" minlength="6" placeholder="Password (6+ chars)">
-<div id="authError" class="error"></div>
-<button id="authGo">Log in</button>
-</div>
+<div id="overlay" class="auth-overlay">
+  <div class="auth-card">
+
+    <div class="auth-logo">🗿</div>
+
+    <h2>WasteTime Chat</h2>
+
+    <p class="auth-subtitle">
+      Sign in or create an account and begin wasting time immediately.
+    </p>
+
+    <div class="auth-tabs">
+      <button id="loginTab" class="tab-btn active" type="button">
+        Log in
+      </button>
+
+      <button id="registerTab" class="tab-btn" type="button">
+        Register
+      </button>
+    </div>
+
+    <div id="registerFields" class="hidden">
+      <div class="field">
+        <label for="username">USERNAME</label>
+        <input
+          id="username"
+          maxlength="10"
+          placeholder="Maximum 10 characters"
+          autocomplete="off"
+        >
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="email">EMAIL</label>
+      <input
+        id="email"
+        type="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+      >
+    </div>
+
+    <div class="field">
+      <label for="password">PASSWORD</label>
+      <input
+        id="password"
+        type="password"
+        minlength="6"
+        placeholder="At least 6 characters"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <div id="authError" class="auth-error"></div>
+
+    <button id="authGo" class="auth-submit" type="button">
+      Log in
+    </button>
+
+    <div class="auth-note">
+      Accounts are powered by Firebase Authentication.
+    </div>
+
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getDatabase, ref, push, query, limitToLast, onChildAdded, get, set } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+import {
+  getDatabase,
+  ref,
+  push,
+  query,
+  limitToLast,
+  onChildAdded,
+  get,
+  set
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
 import { firebaseConfig } from "./config.js";
 
-const $ = id => document.getElementById(id);
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app, firebaseConfig.databaseURL);
+
+const db = getDatabase(
+  app,
+  firebaseConfig.databaseURL
+);
+
 const auth = getAuth(app);
-let mode = "login", profile = null, messagesStarted = false;
 
-function validName(s){
-  if(s.length < 1 || s.length > 10) return false;
-  return [...s].every(ch => { const n = ch.charCodeAt(0); return n >= 33 && n <= 126; });
+const $ = id => document.getElementById(id);
+
+let authMode = "login";
+let profile = null;
+let messagesStarted = false;
+
+function validUsername(username) {
+  if (username.length < 1 || username.length > 10) {
+    return false;
+  }
+
+  return [...username].every(char => {
+    const code = char.charCodeAt(0);
+
+    return code >= 33 && code <= 126;
+  });
 }
-function randomColor(){ return `hsl(${Math.floor(Math.random()*360)} 82% 68%)`; }
 
-function setMode(m){
-  mode = m;
-  const reg = m === "register";
-  $("registerFields").classList.toggle("hidden", !reg);
-  $("authGo").textContent = reg ? "Create account" : "Log in";
+function randomColor() {
+  const hue = Math.floor(Math.random() * 360);
+
+  return `hsl(${hue} 80% 68%)`;
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+
+  const registering = mode === "register";
+
+  $("registerFields").classList.toggle(
+    "hidden",
+    !registering
+  );
+
+  $("loginTab").classList.toggle(
+    "active",
+    !registering
+  );
+
+  $("registerTab").classList.toggle(
+    "active",
+    registering
+  );
+
+  $("authGo").textContent =
+    registering
+      ? "Create account"
+      : "Log in";
+
+  $("password").autocomplete =
+    registering
+      ? "new-password"
+      : "current-password";
+
   $("authError").textContent = "";
 }
-$("loginTab").onclick = () => setMode("login");
-$("registerTab").onclick = () => setMode("register");
 
-function showMessage(m){
-  const row = document.createElement("div"); row.className = "msg";
-  const dot = document.createElement("div"); dot.className = "dot"; dot.style.background = m.color || "#aaa";
-  const bubble = document.createElement("div"); bubble.className = "bubble";
-  const name = document.createElement("div"); name.className = "name"; name.style.color = m.color || "#ddd"; name.textContent = m.name || "?";
-  const time = document.createElement("div"); time.className = "time"; time.textContent = m.createdAt ? new Date(m.createdAt).toLocaleTimeString() : "";
-  const text = document.createElement("div"); text.className = "text"; text.textContent = m.text || "";
-  bubble.append(name,time,text); row.append(dot,bubble); $("messages").append(row);
-  $("messages").scrollTop = $("messages").scrollHeight;
-}
-function startMessages(){
-  if(messagesStarted) return;
-  messagesStarted = true;
-  onChildAdded(query(ref(db,"messages"),limitToLast(100)), s => showMessage(s.val()));
-}
-async function loadProfile(uid){
-  const s = await get(ref(db, `profiles/${uid}`));
-  return s.exists() ? s.val() : null;
-}
-
-$("authGo").onclick = async () => {
-  $("authError").textContent = "";
-  try{
-    const email = $("email").value.trim();
-    const password = $("password").value;
-    if(mode === "register"){
-      const username = $("username").value;
-      if(!validName(username)){ $("authError").textContent = "Username must be 1–10 printable ASCII characters, no spaces."; return; }
-      const cred = await createUserWithEmailAndPassword(auth,email,password);
-      await set(ref(db,`profiles/${cred.user.uid}`),{name:username,color:randomColor(),createdAt:Date.now()});
-    } else {
-      await signInWithEmailAndPassword(auth,email,password);
-    }
-  } catch(err){
-    console.error(err);
-    $("authError").textContent = (err.code || err.message || "Login failed").replace("auth/","");
-  }
-};
-
-onAuthStateChanged(auth, async user => {
-  if(!user){
-    profile = null;
-    $("overlay").classList.remove("hidden");
-    $("logout").classList.add("hidden");
-    $("message").disabled = true; $("send").disabled = true;
-    $("status").textContent = "not logged in";
-    return;
-  }
-  profile = await loadProfile(user.uid);
-  if(!profile){ $("authError").textContent = "No profile found for this account."; await signOut(auth); return; }
-  $("me").textContent = profile.name; $("me").style.color = profile.color;
-  $("overlay").classList.add("hidden"); $("logout").classList.remove("hidden");
-  $("message").disabled = false; $("send").disabled = false;
-  $("status").textContent = "online";
-  startMessages();
+$("loginTab").addEventListener("click", () => {
+  setAuthMode("login");
 });
 
-$("logout").onclick = () => signOut(auth);
+$("registerTab").addEventListener("click", () => {
+  setAuthMode("register");
+});
 
-$("chatForm").onsubmit = async e => {
-  e.preventDefault();
-  const user = auth.currentUser;
-  const text = $("message").value.trim();
-  if(!user || !profile || !text) return;
-  $("message").value = "";
-  await push(ref(db,"messages"),{uid:user.uid,name:profile.name,color:profile.color,text:text.slice(0,500),createdAt:Date.now()});
-};
+function displayError(error) {
+  console.error(error);
+
+  let message =
+    error.code ||
+    error.message ||
+    "Something went wrong.";
+
+  message = message
+    .replace("Firebase: ", "")
+    .replace("auth/", "")
+    .replace(/[()]/g, "");
+
+  $("authError").textContent = message;
+}
+
+$("authGo").addEventListener("click", async () => {
+  $("authError").textContent = "";
+
+  const email =
+    $("email").value.trim();
+
+  const password =
+    $("password").value;
+
+  if (!email) {
+    $("authError").textContent =
+      "Enter your email.";
+
+    return;
+  }
+
+  if (!password) {
+    $("authError").textContent =
+      "Enter your password.";
+
+    return;
+  }
+
+  try {
+    if (authMode === "register") {
+      const username =
+        $("username").value.trim();
+
+      if (!validUsername(username)) {
+        $("authError").textContent =
+          "Username must be 1–10 printable ASCII characters with no spaces.";
+
+        return;
+      }
+
+      const credential =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      const newProfile = {
+        name: username,
+        color: randomColor(),
+        createdAt: Date.now()
+      };
+
+      await set(
+        ref(
+          db,
+          `profiles/${credential.user.uid}`
+        ),
+        newProfile
+      );
+    } else {
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+    }
+  } catch (error) {
+    displayError(error);
+  }
+});
+
+async function loadProfile(uid) {
+  const snapshot =
+    await get(
+      ref(
+        db,
+        `profiles/${uid}`
+      )
+    );
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return snapshot.val();
+}
+
+function addMessage(message) {
+  const row =
+    document.createElement("div");
+
+  row.className = "msg";
+
+  const dot =
+    document.createElement("div");
+
+  dot.className = "dot";
+  dot.style.background =
+    message.color || "#999";
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className = "bubble";
+
+  const header =
+    document.createElement("div");
+
+  header.className = "message-header";
+
+  const name =
+    document.createElement("div");
+
+  name.className = "name";
+  name.textContent =
+    message.name || "Unknown";
+
+  name.style.color =
+    message.color || "#ddd";
+
+  const time =
+    document.createElement("div");
+
+  time.className = "time";
+
+  if (message.createdAt) {
+    time.textContent =
+      new Date(
+        message.createdAt
+      ).toLocaleTimeString(
+        [],
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
+  }
+
+  const text =
+    document.createElement("div");
+
+  text.className = "text";
+  text.textContent =
+    message.text || "";
+
+  header.append(
+    name,
+    time
+  );
+
+  bubble.append(
+    header,
+    text
+  );
+
+  row.append(
+    dot,
+    bubble
+  );
+
+  $("messages").append(row);
+
+  $("messages").scrollTop =
+    $("messages").scrollHeight;
+}
+
+function startMessages() {
+  if (messagesStarted) {
+    return;
+  }
+
+  messagesStarted = true;
+
+  const messageQuery =
+    query(
+      ref(
+        db,
+        "messages"
+      ),
+      limitToLast(100)
+    );
+
+  onChildAdded(
+    messageQuery,
+    snapshot => {
+      addMessage(
+        snapshot.val()
+      );
+    }
+  );
+}
+
+onAuthStateChanged(
+  auth,
+  async user => {
+    if (!user) {
+      profile = null;
+
+      $("overlay").classList.remove(
+        "hidden"
+      );
+
+      $("logout").classList.add(
+        "hidden"
+      );
+
+      $("message").disabled =
+        true;
+
+      $("send").disabled =
+        true;
+
+      $("message").placeholder =
+        "Log in to chat...";
+
+      $("status").textContent =
+        "Not logged in";
+
+      $("me").textContent =
+        "";
+
+      return;
+    }
+
+    try {
+      profile =
+        await loadProfile(
+          user.uid
+        );
+
+      if (!profile) {
+        $("authError").textContent =
+          "Your account exists, but no chat profile was found.";
+
+        await signOut(auth);
+
+        return;
+      }
+
+      $("me").textContent =
+        profile.name;
+
+      $("me").style.color =
+        profile.color;
+
+      $("status").textContent =
+        "Online";
+
+      $("overlay").classList.add(
+        "hidden"
+      );
+
+      $("logout").classList.remove(
+        "hidden"
+      );
+
+      $("message").disabled =
+        false;
+
+      $("send").disabled =
+        false;
+
+      $("message").placeholder =
+        "Type something completely unproductive...";
+
+      startMessages();
+
+      $("message").focus();
+    } catch (error) {
+      displayError(error);
+    }
+  }
+);
+
+$("logout").addEventListener(
+  "click",
+  async () => {
+    await signOut(auth);
+  }
+);
+
+$("chatForm").addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
+
+    const user =
+      auth.currentUser;
+
+    const text =
+      $("message").value.trim();
+
+    if (
+      !user ||
+      !profile ||
+      !text
+    ) {
+      return;
+    }
+
+    $("message").value =
+      "";
+
+    try {
+      await push(
+        ref(
+          db,
+          "messages"
+        ),
+        {
+          uid: user.uid,
+          name: profile.name,
+          color: profile.color,
+          text: text.slice(0, 500),
+          createdAt: Date.now()
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+$("password").addEventListener(
+  "keydown",
+  event => {
+    if (event.key === "Enter") {
+      $("authGo").click();
+    }
+  }
+);
 </script>
+
 </body>
 </html>
